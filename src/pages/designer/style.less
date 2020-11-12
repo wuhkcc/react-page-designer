@@ -1,0 +1,84 @@
+.designer {
+  height: 100vh;
+  .leftPanel {
+    position: fixed;
+    float: left;
+    min-width: 310px;
+    top: 45px;
+    height: 100%;
+    z-index: 8;
+    :global {
+      .ant-tabs-card {
+        height: 100%;
+        width: 100%;
+        color: #ffffff;
+        .ant-tabs-content-holder {
+          background: rgba(60, 60, 70, 0.98);
+          border-right: 1px solid #000;
+          max-width: 270px;
+          .ant-tabs-tabpane {
+            padding: 10px;
+          }
+        }
+        .ant-tabs-nav {
+          min-width: 35px;
+          .ant-tabs-nav-wrap {
+            width: 40px;
+            height: 100%;
+          }
+          .ant-tabs-tab {
+            background: rgba(60, 60, 70, 0.98);
+            margin: 0 5px 0 0;
+            padding: 15px 0;
+            border: 1px solid #000;
+            margin-top: -1px;
+            transition: width .2s,margin-right .2s;
+            &:hover {
+              color: #fff;
+            }
+
+            .ant-tabs-tab-btn {
+              width: 28px;
+              font-size: 15px;
+              font-weight: normal;
+              line-height: 1.2;
+              opacity: 0.6;
+              white-space: pre-wrap;
+              &:active, &:focus {
+                color: #fff;
+              }
+            }
+            &.ant-tabs-tab-active {
+              background: rgba(60, 60, 70, 0.98);
+              text-align: right;
+              margin-right: 0;
+              border-left: none;
+            }
+            .ant-tabs-tab-btn{
+              color: #fff;
+            }
+          }
+          .ant-tabs-ink-bar {
+            background: #f56464;
+            left: 37px;
+            width: 3px;
+            visibility: visible;
+          }
+          .ant-tabs-nav-operations {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
+  .middlePanelBox {
+    background: #2C2C32;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+}
