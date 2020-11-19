@@ -9,5 +9,4 @@ for (let key in dep) {
 }
 
 DefaultParser.YYPage = YYPage;
-
 export { DefaultParser };

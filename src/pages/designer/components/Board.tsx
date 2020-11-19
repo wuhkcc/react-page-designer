@@ -1,111 +1,90 @@
-import React, {isValidElement, createElement, memo, Component, useState, useEffect} from 'react';
-import { useDrop, DropTarget, DropTargetMonitor, DropTargetConnector, ConnectDropTarget } from 'react-dnd';
-import { ItemTypes } from './LibItem';
-// import { defaultUiMeta } from '@/data/lib-items';
-import { DefaultParser } from '@/utils/parser';
-import { processViews } from '@/utils/renderer';
-import _ from 'lodash';
-import { connect, DesignerModelState } from 'umi';
-import { UIMetaType } from '../service';
-const uiParser = DefaultParser || {};
-const uiEvent = {};
-// const uiMeta = [_.cloneDeep(defaultUiMeta)];
+// import React, { useCallback, useState } from 'react';
+// import { DragSourceMonitor, useDrag, useDrop } from 'react-dnd';
+// import { connect, Dispatch } from 'umi';
+// import { defaultUiMetas, ItemTypes, UIMetaType } from '../../../services/designer';
+// import _ from 'lodash';
+// import './Board.less';
 
+// interface BoardProps {
+//   rcViews: [];
+//   uiMeta: [];
+//   dispatch: Dispatch;
+// }
 
-/**
- * Specifies the drop target contract.
- * All methods are optional.
- */
-const boradTarget = {
-  // canDrop(props, monitor) {
-  //   // You can disallow drop based on props or item
-  //   const item = monitor.getItem()
-  //   return canMakeChessMove(item.fromPosition, props.position)
-  // },
+// const Board: React.FC<BoardProps> = ({ rcViews, dispatch }) => {
 
-  hover(props: any, monitor: any, component: any) {
-    // // This is fired very often and lets you perform side effects
-    // // in response to the hover. You can't handle enter and leave
-    // // here—if you need them, put monitor.isOver() into collect() so you
-    // // can use componentDidUpdate() to handle enter/leave.
+//   const [uiMeta, setUiMeta] = useState([
+//     {
+//       uititle: '按钮1',
+//       uitype: 'ButtonWidget',
+//       nid: 'nid_1601261409067_0',
+//       uikey: 'btn1',
+//       title: '按钮1',
+//       ghost: 'false',
+//       visible: 'true',
+//       disabled: 'false',
+//       danger: 'false',
+//       block: 'false',
+//     },
+//   ]);
 
-    // // You can access the coordinates if you need them
-    // const clientOffset = monitor.getClientOffset()
-    // const componentRect = findDOMNode(component).getBoundingClientRect()
+//   const moveCard = useCallback(
+//     (dragIndex: number, hoverIndex: number) => {
+//       const dragCard = cards[dragIndex]
+//       setCards(
+//         update(cards, {
+//           $splice: [
+//             [dragIndex, 1],
+//             [hoverIndex, 0, dragCard],
+//           ],
+//         }),
+//       )
+//     },
+//     [cards],
+//   )
 
-    // // You can check whether we're over a nested drop target
-    // const isOnlyThisOne = monitor.isOver({ shallow: true })
+//   const [{ isOver, isCurrentOver }, drop] = useDrop({
+//     accept: ItemTypes.LIBITEM,
+//     drop(item, monitor) {
+//       if (!item.nid) {
+//         dispatch({ type: 'designer/update', payload: item });
+//       }
+//     },
+//     collect: monitor => ({
+//       isOver: monitor.isOver(),
+//       isCurrentOver: monitor.isOver({ shallow: true }),
+//     }),
+//   });
 
-    // // You will receive hover() even for items for which canDrop() is false
-    // const canDrop = monitor.canDrop()
-  },
+//   return (
+//     <div ref={drop} className="boardWrarper">
+//       <div className={`board ${isCurrentOver ? 'dragOver' : ''}`}>
 
-  drop(props: any, monitor: any, component: any) {
-    // const uiMeta = [_.cloneDeep(defaultUiMeta)];
-  },
-}
+//       </div>
+//     </div>
+//   );
+// };
 
-/**
- * Specifies which props to inject into your component.
- */
-function collect(connect: DropTargetConnector, monitor: DropTargetMonitor): BoardProps {
-  // console.log('drop result', monitor.getDropResult());
-  return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
-    connectDropTarget: connect.dropTarget(),
-    // You can ask the monitor about the current drag state:
-    isOver: monitor.isOver(),
-  }
-}
+// // const moveCmpnt = useCallback(
+// //   (dragIndex: number, hoverIndex: number) => {
+// //     const dragCard = cards[dragIndex]
+// //     setCards(
+// //       update(cards, {
+// //         $splice: [
+// //           [dragIndex, 1],
+// //           [hoverIndex, 0, dragCard],
+// //         ],
+// //       }),
+// //     )
+// //   },
+// //   [cards],
+// // )
 
-interface BoardProps {
-  connectDropTarget: ConnectDropTarget,
-  isOver: boolean,
-  uiMetas?: UIMetaType
-}
+// function mapStateToProps(state: any) {
+//   const { rcViews } = state.designer;
+//   return {
+//     rcViews,
+//   };
+// }
 
-class Board extends React.Component<BoardProps, any>{
-  // cause always rerender after lib item dragged
-  // shouldComponentUpdate(nextProp: BoardProps) {
-  //   return false
-  // }
-  render() {
-    const { connectDropTarget, isOver, uiMetas } = this.props
-    console.log('Board-uiMetas', uiMetas);
-    return connectDropTarget(
-      <div style={{
-        width: '375px',
-        height: '667px',
-        backgroundColor: 'rgb(239, 239, 239)',
-        margin: '100px auto',
-        position: 'relative'
-      }}>
-        {isOver && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              height: '100%',
-              width: '100%',
-              zIndex: 1,
-              opacity: 0.5,
-              backgroundColor: 'yellow',
-            }}
-          />
-        )}
-        {processViews({uiMetas, uiParser, uiEvent})}
-      </div>
-    )
-  }
-}
-function mapStateToProps(state: any) {
-  const { uimetas } = state.designer;
-  console.log('uimetas', uimetas)
-  return {
-    uiMetas: _.cloneDeep(uimetas)
-  }
-}
-const ConnectedBoard = connect(mapStateToProps)(Board);
-export default DropTarget(ItemTypes.COMPONENT, boradTarget, collect)(ConnectedBoard)
+// export default connect(mapStateToProps)(Board);

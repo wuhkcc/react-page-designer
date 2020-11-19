@@ -1,19 +1,20 @@
-import { createElement, isValidElement, memo } from 'react';
+import React, { CElement, createElement, isValidElement, memo } from 'react';
 import _ from 'lodash';
+import withDraggableElement from '@/pages/designer/hocs/withDraggable';
 
 const EmptyView = memo(() => {
   return null;
 });
 
 export function processViews({uiMetas, uiParser, uiEvent}: any) {
+  const uiMetasCopy = _.cloneDeep(uiMetas);
   const views = [];
-  // console.log('processViews--uiMetas', uiMetas);
-  for (let i = 0, len = uiMetas && uiMetas.length; i < len; i++) {
+  for (let i = 0, len = uiMetasCopy && uiMetasCopy.length; i < len; i++) {
     let UIComponent = null;
     let itemEvents = null;
     let itemProps = null;
-    const itemUI = uiMetas[i];
-    delete uiMetas[i].api;
+    const itemUI = uiMetasCopy[i];
+    delete uiMetasCopy[i].api;
     if (itemUI.children) {
       itemUI.children = processViews({uiMetas: itemUI.children, uiParser, uiEvent});
     }
@@ -23,6 +24,7 @@ export function processViews({uiMetas, uiParser, uiEvent}: any) {
     itemProps = _.assign({}, itemUI);
     if (!UIComponent) {
       UIComponent = itemUI.uitype ? uiParser[itemUI.uitype] : null;
+      UIComponent = withDraggableElement(UIComponent, itemProps);
     }
     if (UIComponent && isValidElement(createElement(UIComponent))) {
       const privateProps: any = {};
@@ -40,6 +42,5 @@ export function processViews({uiMetas, uiParser, uiEvent}: any) {
       views.push(createElement(EmptyView, itemProps));
     }
   }
-  // console.log('views', views);
   return views;
 }
